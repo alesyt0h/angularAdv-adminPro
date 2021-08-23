@@ -9,6 +9,7 @@ import { retry, take, map, filter, takeLast } from 'rxjs/operators';
 export class RxjsComponent implements OnInit, OnDestroy {
 
   public intervalSubs!: Subscription;
+  public showNumber: number = 0;
 
   constructor() {
 
@@ -22,7 +23,10 @@ export class RxjsComponent implements OnInit, OnDestroy {
 
     this.intervalSubs = this.retornaIntervalo()
         // .subscribe((valor) => console.log(valor))    // Se puede abreviar de la otra manera
-        .subscribe(console.log)                         // Funciona igual!!!
+        .subscribe(resp => {
+          this.showNumber = resp;
+          console.log(resp)
+        })                         // Funciona igual!!!
 
   }
 

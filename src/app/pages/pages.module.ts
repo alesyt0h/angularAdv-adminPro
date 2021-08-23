@@ -14,6 +14,8 @@ import { PagesComponent } from './pages.component';
 import { AccountsSettingsComponent } from './accounts-settings/accounts-settings.component';
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
+import { PerfilComponent } from './perfil/perfil.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { RxjsComponent } from './rxjs/rxjs.component';
     ProgressComponent,
     AccountsSettingsComponent,
     PromesasComponent,
-    RxjsComponent
+    RxjsComponent,
+    PerfilComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +35,7 @@ import { RxjsComponent } from './rxjs/rxjs.component';
     ChartsModule,
     SharedModule,
     ComponentsModule,
+    ReactiveFormsModule
   ],
   exports: [
     DashboardComponent,

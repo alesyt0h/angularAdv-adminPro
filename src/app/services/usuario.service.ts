@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
+import { Usuario } from '../models/usuario.model';
 
 const base_url = environment.base_url
 declare const gapi: any;
@@ -16,13 +17,22 @@ declare const gapi: any;
 })
 export class UsuarioService {
 
-  public auth2: any
+  public auth2: any;
+  public usuario!: Usuario
 
   constructor(private _http: HttpClient,
               private _router: Router,
               private _ngZone: NgZone) { 
 
     this.googleInit(); 
+  }
+
+  get token(): string{
+    return localStorage.getItem('token') || '';
+  }
+
+  get uid(): string {
+    return this.usuario.uid || '';
   }
 
   // This method has to be here to be able to logout, because logout is calling the instance created by gapi.load
@@ -50,7 +60,6 @@ export class UsuarioService {
   }
 
   validarToken(): Observable<boolean> {
-    const token = localStorage.getItem('token') || '';
 
     // Con esta validación nos ahorrariamos enviar un get que va a devolver error pues no hay token en la petición 
     //
@@ -60,10 +69,18 @@ export class UsuarioService {
 
     return this._http.get(`${base_url}/login/renew`, {
       headers: {
-        'x-token': token
+        'x-token': this.token
       }
     }).pipe(
+      // Aveces !! Muy Excepcionalmente !! Se podria dar el caso de que el map se ejecutase antes que el tap, por eso en el video 15.5 Quito el map e hizo un return directamente despues del localStorage.setItem y cambio el tap por un map
       tap( (resp: any) => {
+        console.log(resp);
+        
+        // Lo que se busca con esto: Al tener que validar el token siempre en una pagina con el guard que requiere validarToken(), al estar creando una nueva instancia de usuario tendria disponible este donde este los datos del usuario por que lo estoy asignando a this.usuario, desde cualquier lugar que import mi usuario.service tengo disponible la instancia de usuario. 
+                                         //  img = ''
+        const { email, google, nombre, role, img, uid } = resp.usuario;
+        this.usuario = new Usuario(nombre, email, '', img, google, role, uid);
+
         localStorage.setItem('token',resp.token)
       }),
       map(resp => true),
@@ -78,6 +95,20 @@ export class UsuarioService {
             localStorage.setItem('token',resp.token)
           })
         )
+  }
+
+  actualizarPerfil( data: {email: string, nombre: string, role: string} ){
+
+    data = {
+      ...data,
+      role: this.usuario.role || ''
+    }
+
+    return this._http.put(`${base_url}/usuarios/${this.uid}`,data,{
+      headers: {
+        'x-token': this.token
+      }
+    });
   }
 
   login(formData: LoginForm){
