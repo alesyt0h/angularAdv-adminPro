@@ -12,6 +12,10 @@ import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { PerfilComponent } from './perfil/perfil.component';
 
+// Mantenimientos
+import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
+
 const routes: Routes = [
   { 
     path: 'dashboard', 
@@ -25,6 +29,10 @@ const routes: Routes = [
       { path: 'progress', component: ProgressComponent, data: { titulo: 'Progresss' } },
       { path: 'promesas', component: PromesasComponent, data: { titulo: 'Promesas' } },
       { path: 'rxjs', component: RxjsComponent, data: { titulo: 'RxJS' } },
+
+      // Mantenimientos
+      { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Usuario de aplicación' } },
+      { path: 'medicos', component: MedicosComponent, data: { titulo: 'Médicos de aplicación' } },
     ]
   }
 ];

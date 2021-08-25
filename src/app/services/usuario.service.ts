@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { environment } from '../../environments/environment.prod';
-import { catchError, map, tap } from 'rxjs/operators'
+import { catchError, delay, map, tap } from 'rxjs/operators'
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
 import { Usuario } from '../models/usuario.model';
+import { CargarUsuario } from '../interfaces/cargar-usuarios.interface';
 
 const base_url = environment.base_url
 declare const gapi: any;
@@ -33,6 +34,14 @@ export class UsuarioService {
 
   get uid(): string {
     return this.usuario.uid || '';
+  }
+
+  get headers() {
+    return {
+      headers: {
+        'x-token': this.token
+      }
+    }
   }
 
   // This method has to be here to be able to logout, because logout is calling the instance created by gapi.load
@@ -104,11 +113,7 @@ export class UsuarioService {
       role: this.usuario.role || ''
     }
 
-    return this._http.put(`${base_url}/usuarios/${this.uid}`,data,{
-      headers: {
-        'x-token': this.token
-      }
-    });
+    return this._http.put(`${base_url}/usuarios/${this.uid}`, data, this.headers);
   }
 
   login(formData: LoginForm){
@@ -127,5 +132,33 @@ export class UsuarioService {
             localStorage.setItem('token',resp.token)
           })
         )
+  }
+
+  cargarUsuarios(desde: number = 0){
+    // Change the HTTP Get Request to include a referer from Google to avoid 403. That’s an error - Rate-limit exceeded That’s all we know  ----- When loading several images from Google's CDN
+    const url = `${base_url}/usuarios?desde=${desde}`
+    // return this._http.get<{total: Number, usuarios: Usuario[]}>(url, this.headers); // Se puede hacer asi para asignar dos valores devueltos y que al desestructurar la response de cargarUsuarios en el usuarios.component no me marque error.
+    return this._http.get<CargarUsuario>(url, this.headers)
+        .pipe(
+          delay(100),
+          map(resp => {
+            const usuarios = resp.usuarios.map(
+              user => new Usuario(user.nombre, user.email,'', user.img, user.google, user.role, user.uid)
+            );
+
+            return {
+              total: resp.total,
+              usuarios
+            }
+          })
+        )
+  }
+
+  eliminarUsuario(uid: string) {
+    return this._http.delete(`${base_url}/usuarios/${uid}`, this.headers);
+  }
+
+  guardarUsuario( usuario: Usuario ){
+    return this._http.put(`${base_url}/usuarios/${usuario.uid}`, usuario, this.headers);
   }
 }

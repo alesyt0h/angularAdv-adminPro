@@ -25,7 +25,7 @@ export class PerfilComponent implements OnInit {
 
   constructor(private _formBuilder: FormBuilder,
               private _usuarioService: UsuarioService,
-              private _fileUpload: FileUploadService) { 
+              private _fileUploadService: FileUploadService) { 
 
     this.usuario = _usuarioService.usuario;
   }
@@ -70,7 +70,7 @@ export class PerfilComponent implements OnInit {
   }
 
   subirImagen(){
-    this._fileUpload.actualizarFoto(this.imagenSubir,'usuarios',this.usuario.uid!)
+    this._fileUploadService.actualizarFoto(this.imagenSubir,'usuarios',this.usuario.uid!)
         .then(img => {
           this.usuario.img = img
           Swal.fire('Imagen subida!','La imagen se actualizo correctamente','success')

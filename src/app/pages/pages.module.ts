@@ -16,6 +16,9 @@ import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
+import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
 
 
 @NgModule({
@@ -27,7 +30,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     AccountsSettingsComponent,
     PromesasComponent,
     RxjsComponent,
-    PerfilComponent
+    PerfilComponent,
+    MedicosComponent,
+    UsuariosComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +40,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ChartsModule,
     SharedModule,
     ComponentsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [
     DashboardComponent,
