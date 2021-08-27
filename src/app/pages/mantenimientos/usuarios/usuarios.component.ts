@@ -34,19 +34,23 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.cargarUsuarios();
+    this.cargarUsuarios(); // Creo que seria mejor actualizar hospitales en el array para evitar demasiadas peticiones http
     this.imgSubs = this._modalImagenService.nuevaImagen
         .pipe(delay(200))
-        .subscribe(img => this.cargarUsuarios());
+        .subscribe(img => this.cargarUsuarios()); // Creo que seria mejor actualizar hospitales en el array para evitar demasiadas peticiones http
   }
   
   get myUid(){
     return this._usuarioService.uid;
   }
 
+  get myRole(){
+    return this._usuarioService.role;
+  }
+
   cargarUsuarios(){
     this.cargando = true;
-    this._usuarioService.cargarUsuarios(this.desde)
+    this._usuarioService.cargarUsuarios(this.desde) 
         .subscribe( ({total, usuarios}) => {
           this.totalUsuarios = total;
           this.usuarios = usuarios;
@@ -69,7 +73,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       this.desde -= valor;
     }
 
-    this.cargarUsuarios();
+    this.cargarUsuarios(); 
 
   }
 
@@ -80,7 +84,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
     this._busquedasService.buscar('usuarios',termino)
         .subscribe(resultados => {
-          this.usuarios = resultados;
+          this.usuarios = resultados as Usuario[];
         })
   }
 
@@ -108,7 +112,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
                 `El usuario ${usuario.nombre} ha sido borrado`,
                 'success'
               );
-              this.cargarUsuarios();
+              this.cargarUsuarios(); // Creo que seria mejor actualizar hospitales en el array para evitar demasiadas peticiones http
             })
       }
     })

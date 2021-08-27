@@ -5,16 +5,18 @@
                 
                 <input type="text" 
                        class="form-control"
+                       placeholder="Buscar hospital..."
                        #termino
-                       placeholder="Buscar médico..."
-                       (keyup)="buscarMedico(termino.value)"/>
+                       (keyup)="searchQuery(termino.value)"
+                       />
 
             </div>
         </div>
     </div>
 </div>
 
-<div class="row animated fadeIn fast" *ngIf="cargando">
+<div class="row animated fadeIn fast"
+     *ngIf="cargando">
     <div class="col-12">
         <div class="alert alert-success text-center">
             <h4 class="alert-heading">Cargando</h4>
@@ -28,20 +30,30 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
+                <!-- <div class="text-right btn-crear">
+                    <button class="btn btn-primary">
+                        <i class="fa far fa-hospital"></i>
+                        Crear hospital
+                    </button>
+                </div>
+                <h4 class="card-title">Hospitales ({{hospitales.length}})</h4>
+                <h6 class="card-subtitle">Hospitales registrados en la aplicación</h6> -->
+
                 <div class="row">
                     <div class="col-8">
-                        <h4 class="card-title">Médicos ({{medicos.length}})</h4>
-                        <h6 class="card-subtitle">Médicos registrados en la aplicación</h6>
+                        <h4 class="card-title">Hospitales ({{hospitales.length}})</h4>
+                        <h6 class="card-subtitle">Hospitales registrados en la aplicación</h6>
                     </div>
                     <div class="col">
                         <div class="text-right">
-                            <a class="btn btn-primary" routerLink="/dashboard/medico/nuevo">
-                                <i class="fa fas fa-user-md mr-1"></i>
-                                Crear médico
-                            </a>
+                            <button class="btn btn-primary" (click)="abrirSweetAlert()">
+                                <i class="fa fa-hospital-o mr-1"></i>
+                                Crear hospital
+                            </button>
                         </div>
                     </div>
                 </div>
+
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
@@ -52,39 +64,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let medico of medicos">
-                                <td>
-                                    <img [src]="medico.img | imagen:'medicos'" 
-                                         [alt]="medico.nombre" 
-                                         class="w100 cursor" 
-                                         (click)="abrirModal(medico)"> 
+                            <tr *ngFor="let hospital of hospitales">
+                                <!-- <td>{{hospital.img | imagen:'hospitales'}}</td> -->
+                                <td class="text-center">
+                                    <img (click)="abrirModal(hospital)"[src]="hospital.img | imagen:'hospitales'" [alt]="hospital.nombre" class="w100 cursor">
                                 </td>
-                                <td>{{medico.nombre}}</td>
-
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Nombre del hospital" [(ngModel)]="hospital.nombre"/>
+                                </td>
                                 <td class="text-nowrap text-center">
-                                    <a [routerLink]="['/dashboard','medico',medico._id]"
+                                    <a (click)="guardarCambios(hospital)"
                                        data-toggle="tooltip" 
-                                       data-original-title="Editar"> 
-                                       <i class="fa fa-pencil text-inverse m-r-10"></i> 
-                                    </a>
-                                    <a data-toggle="tooltip" 
-                                       data-original-title="Borrar" 
                                        class="cursor"
-                                       (click)="borrarMedico(medico._id!, medico.nombre)"> 
+                                       data-original-title="Guardar"> 
+                                       <i class="fa fa-save text-inverse m-r-10"></i> 
+                                    </a>
+                                    <a (click)="eliminarHospital(hospital)"
+                                       data-toggle="tooltip"
+                                       class="cursor"
+                                       data-original-title="Borrar"> 
                                        <i class="fa fa-close text-danger"></i> 
                                     </a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div *ngIf="noMatches" class="text-center">
-                        <span>No se ha encontrado ningún médico por ese nombre</span>
-                    </div>
                 </div>
 
                 <!-- <button class="btn btn-secondary">Anterior</button>
                 &nbsp;
                 <button class="btn btn-secondary">Siguiente</button> -->
+
             </div>
         </div>
     </div>
